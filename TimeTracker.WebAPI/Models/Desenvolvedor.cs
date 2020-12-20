@@ -8,7 +8,7 @@ namespace TimeTracker.WebAPI.Models
         {
 
         }
-        public Desenvolvedor(int id, string nome, string email, string telefone, DateTime auditoria_DataCadastro)
+        public Desenvolvedor(int id, string nome, string email, string telefone)
         {
             this.Id = id;
             this.Nome = nome;

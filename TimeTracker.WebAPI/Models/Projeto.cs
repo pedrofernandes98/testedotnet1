@@ -10,7 +10,7 @@ namespace TimeTracker.WebAPI.Models
 
         }
 
-        public Projeto(int id, string nome, string descricao, DateTime auditoria_DataCadastro)
+        public Projeto(int id, string nome, string descricao)
         {
             this.Id = id;
             this.Nome = nome;
