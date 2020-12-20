@@ -11,27 +11,6 @@ namespace TimeTracker.WebAPI.Controllers
     [Route("api/v1/[controller]")]
     public class DesenvolvedorController : ControllerBase
     {
-        public List<Desenvolvedor> Desenvolvedores = new List<Desenvolvedor>()
-        {
-            new Desenvolvedor(){
-                Id = 1,
-                Nome = "Pedro",
-                Email = "ppedrohfs@gmail.com",
-                Telefone = "548484848484840"
-            },
-            new Desenvolvedor(){
-                Id = 2,
-                Nome = "Henrique",
-                Email = "emagrecimentos@gmail.com",
-                Telefone = "4545445454"
-            },
-            new Desenvolvedor(){
-                Id = 3,
-                Nome = "Fernandes",
-                Email = "Fernandes@gmail.com",
-                Telefone = "4545454545454"
-            }
-        };
         private readonly DataContext _context;
 
         public DesenvolvedorController(DataContext context)
