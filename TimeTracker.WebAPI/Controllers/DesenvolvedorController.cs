@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TimeTracker.WebAPI.Data;
 using TimeTracker.WebAPI.Models;
 
 namespace TimeTracker.WebAPI.Controllers
@@ -30,21 +32,36 @@ namespace TimeTracker.WebAPI.Controllers
                 Telefone = "4545454545454"
             }
         };
-        public DesenvolvedorController()
+        private readonly DataContext _context;
+
+        public DesenvolvedorController(DataContext context)
         {
-            
+            _context = context;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(Desenvolvedores);
+            var desenvolvedores = _context.Desenvolvedores.AsNoTracking().ToList<Desenvolvedor>();
+            return Ok(desenvolvedores);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var desenvolvedor = Desenvolvedores.FirstOrDefault(x => x.Id == id);
+            var desenvolvedor = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+
+            if(desenvolvedor == null){
+                return BadRequest("Desenvolvedor não foi encontrado");
+            }
+
+            return Ok(desenvolvedor);
+        }
+
+        [HttpGet("byname")]
+        public IActionResult GetByName(string nome)
+        {
+            var desenvolvedor = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Nome.Contains(nome));
 
             if(desenvolvedor == null){
                 return BadRequest("Desenvolvedor não foi encontrado");
@@ -56,19 +73,59 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPost]
         public IActionResult Post(Desenvolvedor desenvolvedor)
         {
-            return Ok(desenvolvedor);
+            if(desenvolvedor == null){
+                return BadRequest("Não foi impossível incluir um novo Desenvolvedor");
+            }
+
+            _context.Desenvolvedores.Add(desenvolvedor);
+            var novoDesenvolvedorId =  _context.SaveChanges();
+
+            return Ok("Desenvolvedor Cadastrado com Sucesso!");
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id,Desenvolvedor desenvolvedor)
+        public IActionResult Put(int id, Desenvolvedor desenvolvedor)
         {
-            return Ok(desenvolvedor);
+            var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+
+            if(dev == null){
+                return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
+            }
+
+            _context.Desenvolvedores.Update(desenvolvedor);
+            _context.SaveChanges();
+            
+            return Ok("Desenvolvedor Atualizado com Sucesso!");
         }
 
-        [HttpDelete]
+        [HttpPatch("{id}")]
+        public IActionResult Patch(int id, Desenvolvedor desenvolvedor)
+        {
+            var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+
+            if(dev == null){
+                return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
+            }
+
+            _context.Desenvolvedores.Update(desenvolvedor);
+            _context.SaveChanges();
+            
+            return Ok("Desenvolvedor Atualizado com Sucesso!");
+        }
+
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            return Ok(id);
+            var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+
+            if(dev == null){
+                return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
+            }
+
+            _context.Desenvolvedores.Remove(dev);
+            _context.SaveChanges();
+
+            return Ok("Desenvolvedor deletado com sucesso!");
         }
 
     }
