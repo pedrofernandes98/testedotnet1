@@ -30,6 +30,8 @@ namespace TimeTracker.WebAPI
             services.AddDbContext<DataContext>(
                 context => context.UseSqlite(Configuration.GetConnectionString("Default"))
             );
+
+            services.AddScoped<IRepository, Repository>();
             services.AddControllers();
         }
 

@@ -12,9 +12,12 @@ namespace TimeTracker.WebAPI.Controllers
     public class ProjetoController : ControllerBase
     {
         private readonly DataContext _context;
-        public ProjetoController(DataContext context)
+        private readonly IRepository _repository;
+
+        public ProjetoController(DataContext context, IRepository repository)
         {
             _context = context;
+            _repository = repository;
         }
 
         [HttpGet]
@@ -50,14 +53,15 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPost]
         public IActionResult Post(Projeto projeto)
         {
-            if(projeto == null){
-                return BadRequest("Não foi impossível incluir um novo Desenvolvedor");
+            if(projeto != null)
+            {
+                _repository.Add(projeto);
+                if(_repository.SaveChanges())
+                {
+                    return Ok("Projeto Cadastrado com Sucesso!");
+                };
             }
-
-            _context.Projetos.Add(projeto);
-            var novoProjetovedorId =  _context.SaveChanges();
-
-            return Ok("Projeto Cadastrado com Sucesso!");
+            return BadRequest("Não foi impossível incluir um novo Projeto");
         }
 
         [HttpPut("{id}")]
@@ -65,14 +69,16 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var proj = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(proj == null){
-                return BadRequest("O projeto de Id = " + id + " não foi encontrado.");
+            if(proj != null){
+               _repository.Update(projeto);
+               if(_repository.SaveChanges())
+               {
+                   return Ok("Projeto Atualizado com Sucesso!");
+               }
+
             }
 
-            _context.Projetos.Update(projeto);
-            _context.SaveChanges();
-            
-            return Ok("Projeto Atualizado com Sucesso!");
+            return BadRequest("O projeto de Id = " + id + " não foi encontrado.");
         }
 
         [HttpPatch("{id}")]
@@ -80,14 +86,16 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var proj = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(proj == null){
-                return BadRequest("O projeto de Id = " + id + " não foi encontrado.");
+            if(proj != null){
+               _repository.Update(projeto);
+               if(_repository.SaveChanges())
+               {
+                   return Ok("Projeto Atualizado com Sucesso!");
+               }
+
             }
 
-            _context.Projetos.Update(projeto);
-            _context.SaveChanges();
-            
-            return Ok("Projeto Atualizado com Sucesso!");
+            return BadRequest("O projeto de Id = " + id + " não foi encontrado.");
         }
 
         [HttpDelete("{id}")]
@@ -95,14 +103,15 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var projeto = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(projeto == null){
-                return BadRequest("O projeto de Id = " + id + " não foi encontrado.");
+            if(projeto != null){
+                _repository.Remove(projeto);
+                if(_repository.SaveChanges())
+                {
+                    return Ok("Projeto deletado com sucesso!");
+                }
             }
 
-            _context.Projetos.Remove(projeto);
-            _context.SaveChanges();
-
-            return Ok("Projeto deletado com sucesso!");
+            return BadRequest("O projeto de Id = " + id + " não foi encontrado.");
         }
     }
 }

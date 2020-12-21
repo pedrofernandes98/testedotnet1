@@ -12,9 +12,11 @@ namespace TimeTracker.WebAPI.Controllers
     public class DesenvolvedorController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly IRepository _repository;
 
-        public DesenvolvedorController(DataContext context)
+        public DesenvolvedorController(DataContext context, IRepository repository)
         {
+            _repository = repository;
             _context = context;
         }
 
@@ -30,7 +32,8 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var desenvolvedor = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(desenvolvedor == null){
+            if (desenvolvedor == null)
+            {
                 return BadRequest("Desenvolvedor não foi encontrado");
             }
 
@@ -42,7 +45,8 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var desenvolvedor = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Nome.Contains(nome));
 
-            if(desenvolvedor == null){
+            if (desenvolvedor == null)
+            {
                 return BadRequest("Desenvolvedor não foi encontrado");
             }
 
@@ -52,14 +56,16 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPost]
         public IActionResult Post(Desenvolvedor desenvolvedor)
         {
-            if(desenvolvedor == null){
-                return BadRequest("Não foi impossível incluir um novo Desenvolvedor");
+            if (desenvolvedor != null)
+            {
+                _repository.Add(desenvolvedor);
+                if(_repository.SaveChanges())
+                {
+                    return Ok("Desenvolvedor Cadastrado com Sucesso!");
+                }
             }
-
-            _context.Desenvolvedores.Add(desenvolvedor);
-            var novoDesenvolvedorId =  _context.SaveChanges();
-
-            return Ok("Desenvolvedor Cadastrado com Sucesso!");
+            
+            return BadRequest("Não foi impossível incluir um novo Desenvolvedor");
         }
 
         [HttpPut("{id}")]
@@ -67,14 +73,16 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(dev == null){
-                return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
+            if (dev != null)
+            {
+                _repository.Update(desenvolvedor);
+                if(_repository.SaveChanges())
+                {
+                    return Ok("Desenvolvedor Atualizado com Sucesso!");
+                }
             }
 
-            _context.Desenvolvedores.Update(desenvolvedor);
-            _context.SaveChanges();
-            
-            return Ok("Desenvolvedor Atualizado com Sucesso!");
+            return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
         }
 
         [HttpPatch("{id}")]
@@ -82,14 +90,16 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(dev == null){
-                return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
+            if (dev != null)
+            {
+                _repository.Update(desenvolvedor);
+                if(_repository.SaveChanges())
+                {
+                    return Ok("Desenvolvedor Atualizado com Sucesso!");
+                }
             }
 
-            _context.Desenvolvedores.Update(desenvolvedor);
-            _context.SaveChanges();
-            
-            return Ok("Desenvolvedor Atualizado com Sucesso!");
+            return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
         }
 
         [HttpDelete("{id}")]
@@ -97,14 +107,16 @@ namespace TimeTracker.WebAPI.Controllers
         {
             var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
 
-            if(dev == null){
-                return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
+            if (dev != null)
+            {
+                _repository.Remove(dev);
+                if(_repository.SaveChanges())
+                {
+                    return Ok("Desenvolvedor deletado com sucesso!");
+                }
             }
 
-            _context.Desenvolvedores.Remove(dev);
-            _context.SaveChanges();
-
-            return Ok("Desenvolvedor deletado com sucesso!");
+            return BadRequest("O desenvolvedor de Id = " + id + " não foi encontrado.");
         }
 
     }
