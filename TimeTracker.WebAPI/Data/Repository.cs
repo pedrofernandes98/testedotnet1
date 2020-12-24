@@ -80,6 +80,23 @@ namespace TimeTracker.WebAPI.Data
             return query.FirstOrDefault();
         }
 
+        public Desenvolvedor GetDesenvolvedorByName(string nome, bool includeProjetos = false)
+        {
+            IQueryable<Desenvolvedor> query = _context.Desenvolvedores;
+
+            if(includeProjetos)
+            {
+                query = query.Include(x => x.Lancamentos_Horas)
+                             .ThenInclude(p => p.Projeto);
+            }
+
+            query = query.AsNoTracking()
+                         .Where(x => x.Nome == nome)
+                         .OrderBy(x => x.Id);
+
+            return query.FirstOrDefault();
+        }
+
         public Projeto[] GetAllProjetos(bool includeDesenvolvedor = false)
         {
             IQueryable<Projeto> query = _context.Projetos;
@@ -103,11 +120,11 @@ namespace TimeTracker.WebAPI.Data
             if(includeDesenvolvedor)
             {
                 query = query.Include(x => x.Lancamentos_Horas)
-                             .ThenInclude(dev => dev.Desenvolvedor)
-                             .Where(dev => dev.Lancamentos_Horas.Any(d => d.Id == devId));
+                             .ThenInclude(dev => dev.Desenvolvedor);       
             }
 
             query = query.AsNoTracking()
+                         .Where(dev => dev.Lancamentos_Horas.Any(d => d.Id == devId))
                          .OrderBy(x => x.Id);
 
             return query.ToArray();
@@ -125,6 +142,22 @@ namespace TimeTracker.WebAPI.Data
 
             query = query.AsNoTracking()
                          .Where(x => x.Id == projetoId)
+                         .OrderBy(x => x.Id);
+
+            return query.FirstOrDefault();
+        }
+
+        public Projeto GetProjetoByNama(string nome, bool includeDesenvolvedor = false)
+        {
+            IQueryable<Projeto> query = _context.Projetos;
+
+            if(includeDesenvolvedor)
+            {
+                query = query.Include(x => x.Lancamentos_Horas)
+                             .ThenInclude(d => d.Desenvolvedor);
+            }
+
+            query = query.Where(x => x.Nome == nome)
                          .OrderBy(x => x.Id);
 
             return query.FirstOrDefault();

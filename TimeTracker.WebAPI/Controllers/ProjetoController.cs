@@ -11,26 +11,24 @@ namespace TimeTracker.WebAPI.Controllers
     [Route("api/v1/[controller]")]
     public class ProjetoController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly IRepository _repository;
 
         public ProjetoController(DataContext context, IRepository repository)
         {
-            _context = context;
             _repository = repository;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var projetos = _context.Projetos.AsNoTracking().ToList<Projeto>();
+            var projetos = _repository.GetAllProjetos(true);
             return Ok(projetos);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var projeto = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var projeto = _repository.GetProjetoById(id, false);
 
             if(projeto == null){
                 return BadRequest("Projeto não encontrado");
@@ -41,7 +39,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpGet("byname")]
         public IActionResult GetByName(string nome)
         {
-            var projeto = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Nome.Contains(nome));
+            var projeto = _repository.GetDesenvolvedorByName(nome);
 
             if(projeto == null){
                 return BadRequest("Projeto não foi encontrado");
@@ -67,7 +65,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, Projeto projeto)
         {
-            var proj = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var proj = _repository.GetProjetoById(id);
 
             if(proj != null){
                _repository.Update(projeto);
@@ -84,7 +82,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Projeto projeto)
         {
-            var proj = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var proj = _repository.GetProjetoById(id);
 
             if(proj != null){
                _repository.Update(projeto);
@@ -101,7 +99,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var projeto = _context.Projetos.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var projeto = _repository.GetProjetoById(id);
 
             if(projeto != null){
                 _repository.Remove(projeto);

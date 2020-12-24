@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using TimeTracker.WebAPI.Models;
@@ -41,6 +42,17 @@ namespace TimeTracker.WebAPI.Data
                     new Desenvolvedor(5, "Lucas", "Machado@gmail.com", "565685415"),
                     new Desenvolvedor(6, "Pedro", "Alvares@gmail.com", "456454545"),
                     new Desenvolvedor(7, "Paulo", "José@gmail.com", "9874512")
+                });
+
+            builder.Entity<LancamentoHoras>()
+                .HasData(new List<LancamentoHoras>(){
+                    new LancamentoHoras(1, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 1, null, 1, null),
+                    new LancamentoHoras(2, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 2, null, 2, null),
+                    new LancamentoHoras(3, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 3, null, 1, null),
+                    new LancamentoHoras(4, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 4, null, 4, null),
+                    new LancamentoHoras(5, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 5, null, 2, null),
+                    new LancamentoHoras(6, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 6, null, 1, null),
+                    new LancamentoHoras(7, Convert.ToDateTime("23/12/2020 08:00:00"), Convert.ToDateTime("23/12/2020 18:00:00"), 7, null, 1, null),
                 });
 
         }

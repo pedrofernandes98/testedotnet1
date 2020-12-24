@@ -11,26 +11,24 @@ namespace TimeTracker.WebAPI.Controllers
     [Route("api/v1/[controller]")]
     public class DesenvolvedorController : ControllerBase
     {
-        private readonly DataContext _context;
         private readonly IRepository _repository;
 
-        public DesenvolvedorController(DataContext context, IRepository repository)
+        public DesenvolvedorController( IRepository repository)
         {
             _repository = repository;
-            _context = context;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var desenvolvedores = _context.Desenvolvedores.AsNoTracking().ToList<Desenvolvedor>();
+            var desenvolvedores = _repository.GetAllDesenvolvedores(true);
             return Ok(desenvolvedores);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var desenvolvedor = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var desenvolvedor = _repository.GetDesenvolvedorById(id,false);
 
             if (desenvolvedor == null)
             {
@@ -43,7 +41,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpGet("byname")]
         public IActionResult GetByName(string nome)
         {
-            var desenvolvedor = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Nome.Contains(nome));
+            var desenvolvedor = _repository.GetDesenvolvedorByName(nome, false);
 
             if (desenvolvedor == null)
             {
@@ -71,7 +69,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, Desenvolvedor desenvolvedor)
         {
-            var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var dev = _repository.GetDesenvolvedorById(id);
 
             if (dev != null)
             {
@@ -88,7 +86,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Desenvolvedor desenvolvedor)
         {
-            var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var dev = _repository.GetDesenvolvedorById(id);
 
             if (dev != null)
             {
@@ -105,7 +103,7 @@ namespace TimeTracker.WebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var dev = _context.Desenvolvedores.AsNoTracking().FirstOrDefault(x => x.Id == id);
+            var dev = _repository.GetDesenvolvedorById(id);
 
             if (dev != null)
             {

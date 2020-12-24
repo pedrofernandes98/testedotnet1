@@ -12,17 +12,21 @@ namespace TimeTracker.WebAPI.Data
 
          bool SaveChanges();
 
-         Desenvolvedor[] GetAllDesenvolvedores();
+         Desenvolvedor[] GetAllDesenvolvedores(bool includeProjetos = false);
 
-         Desenvolvedor[] GetAllDesenvolvedoresByProjetoId();
+         Desenvolvedor[] GetAllDesenvolvedoresByProjetoId(int ProjetoId, bool includeProjetos = false);
 
-         Desenvolvedor GetDesenvolvedorById();
+         Desenvolvedor GetDesenvolvedorById(int DesenvolvedorId, bool includeProjetos = false);
 
-         Projeto[] GetAllProjetos();
+         Desenvolvedor GetDesenvolvedorByName(string nome, bool includeProjetos = false);
 
-         Projeto[] GetAllProjetosByDesenvolvedorId();
+         Projeto[] GetAllProjetos(bool includeDesenvolvedor = false);
 
-         Projeto GetProjetoById();
+         Projeto[] GetAllProjetosByDesenvolvedorId(int devId,bool includeDesenvolvedor = false);
+
+         Projeto GetProjetoById(int projetoId, bool includeDesenvolvedor = false);
+
+         Projeto GetProjetoByNama(string nome, bool includeDesenvolvedor = false);
 
     }
 }
